@@ -1,0 +1,95 @@
+syntax = "proto3";
+
+package atelie.v1;
+
+service MuralService {
+  rpc ObterMural(MuralRequest) returns (RespostaMural);
+}
+service AtelieService {
+  rpc ConsultarOrdemServico(ConsultaOSRequest) returns (OrdemServicoResponse);
+  rpc ListarTiposServico(Vazio) returns (ListaTiposServicoResponse);
+  rpc CalcularOrcamento(OrcamentoRequest) returns (OrcamentoResponse);
+}
+
+message Vazio {}
+
+message MuralRequest {
+  int32 id_grupo = 1;
+}
+
+message ContadorGrupo {
+  int32 id_grupo = 1;
+  string nome_grupo = 2;
+  int32 quantidade_utilizacoes = 3;
+}
+
+message AvisoGrupo {
+  int32 id_grupo = 1;
+  string titulo = 2;
+  string mensagem = 3;
+  string timestamp = 4;
+}
+
+message RespostaMural {
+  int32 id_grupo = 1;
+  string nome_grupo = 2;
+  string ultima_atualizacao = 3;
+  repeated ContadorGrupo ranking = 4;
+  repeated AvisoGrupo avisos_grupo = 5;
+}
+
+message ConsultaOSRequest {
+  int32 id_ordem_servico = 1;
+}
+
+message OrdemServicoResponse {
+  bool encontrada = 1;
+  int32 id = 2;
+  string codigo_cliente = 3;
+  string status = 4;
+  double valor_total = 5;
+  string mensagem_erro = 6;
+}
+
+message TipoServico {
+  int32 id = 1;
+  string nome = 2;
+  string descricao = 3;
+  double preco_base = 4;
+  int32 prazo_estimado_dias = 5;
+}
+
+message ListaTiposServicoResponse {
+  repeated TipoServico servicos = 1;
+}
+
+message ItemOrcamentoRequest {
+  int32 id_tipo_servico = 1;
+  int32 quantidade_pecas = 2;
+}
+
+message OrcamentoRequest {
+  string codigo_cliente = 1;
+  repeated ItemOrcamentoRequest itens = 2;
+  bool entrega_expressa = 3;
+}
+
+message ItemOrcamentoResponse {
+  string nome_servico = 1;
+  int32 quantidade_pecas = 2;
+  double preco_unitario = 3;
+  double subtotal = 4;
+  int32 prazo_dias = 5;
+}
+
+message OrcamentoResponse {
+  string codigo_cliente = 1;
+  repeated ItemOrcamentoResponse itens = 2;
+  double valor_bruto = 3;
+  double desconto = 4;
+  double taxa_urgencia = 5;
+  double valor_final = 6;
+  int32 prazo_total_dias = 7;
+  string data_estimada_entrega = 8;
+  repeated string regras_aplicadas = 9;
+}
